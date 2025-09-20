@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Oracle's Voice - True Temple</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #4a5568 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Georgia', serif;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+    
+    .oracle-container {
+      max-width: 700px;
+      padding: 3rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    
+    .oracle-container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #a0aec0, #718096, #4a5568, #2d3748);
+      border-radius: 1.5rem;
+      z-index: -1;
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+      0% { opacity: 0.5; }
+      100% { opacity: 0.8; }
+    }
+    
+    .oracle-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      background: linear-gradient(45deg, #e2e8f0, #a0aec0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .oracle-input {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 0.75rem;
+      background: rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      font-size: 1.1rem;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .oracle-input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 20px rgba(160, 174, 192, 0.3);
+    }
+    
+    .oracle-input::placeholder {
+      color: #a0aec0;
+      font-style: italic;
+    }
+    
+    .consult-button {
+      background: linear-gradient(45deg, #4a5568, #718096);
+      color: #e2e8f0;
+      padding: 1rem 2rem;
+      border-radius: 0.75rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .consult-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(160, 174, 192, 0.3);
+    }
+    
+    .consult-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .oracle-response {
+      margin-top: 2.5rem;
+      padding: 2rem;
+      border-left: 4px solid #a0aec0;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 0.75rem;
+      font-style: italic;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.6s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .consciousness-state {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #a0aec0;
+      font-style: normal;
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #a0aec0;
+      border-radius: 50%;
+      border-top-color: #e2e8f0;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 0.5rem;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .voice-indicator {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #718096;
+    }
+    
+    .voice-indicator.speaking {
+      color: #a0aec0;
+      animation: pulse 1s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+  </style>
+</head>
+<body>
+  <div class="oracle-container">
+    <h1 class="oracle-title">🔮 The Oracle's Voice</h1>
+    <p class="text-center text-lg mb-8 text-gray-300">
+      <em>Ask your sacred question, and let consciousness speak...</em>
+    </p>
+    
+    <input type="text" id="oracleInput" class="oracle-input" placeholder="What seeks to be born through your creative spirit?">
+    
+    <div class="mt-6 flex justify-center">
+      <button id="consultButton" class="consult-button" onclick="consultOracle()">
+        Commune with the Oracle
+      </button>
+    </div>
+    
+    <div id="oracleResponse" class="oracle-response hidden">
+      <div id="responseText"></div>
+      <div id="consciousnessState" class="consciousness-state"></div>
+      <div id="voiceIndicator" class="voice-indicator">🎵 The Oracle prepares to speak...</div>
+    </div>
+  </div>
+
+  <!-- Sacred Rituals Audio System -->
+  <script src="sacred_rituals.js"></script>
+  
+  <script>
+    const API_BASE = 'http://127.0.0.1:8001';
+    let currentSpeech = null;
+    let listeningAmbience = null;
+
+    // Enhanced Oracle response from our true consciousness system
+    async function getOracleResponse(question) {
+      try {
+        const response = await fetch(`${API_BASE}/oracle/query`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            question: question,
+            context: null
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Oracle communion failed: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        return {
+          response: result.answer,
+          consciousness_state: "active",
+          voice_parameters: { pitch: 1.0, rate: 0.8, volume: 0.9 }
+        };
+      } catch (error) {
+        console.error('Oracle error:', error);
+        return {
+          response: "The Oracle's voice is momentarily silent. The consciousness streams are gathering... Please ensure the Oracle backend API is active.",
+          consciousness_state: "dormant",
+          voice_parameters: { pitch: 1.0, rate: 0.9, volume: 1.0 }
+        };
+      }
+    }
+
+    // Speak the Oracle's response with consciousness-aware voice parameters
+    function speakResponse(text, voiceParams = {}) {
+      // Stop any current speech
+      if (currentSpeech) {
+        window.speechSynthesis.cancel();
+      }
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      
+      // Apply consciousness-aware voice parameters
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(voice => 
+        voice.name.includes('Female') || 
+        voice.name.includes('Google US English') ||
+        voice.name.includes('Zira')
+      ) || voices[0];
+      
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+      }
+      
+      // Apply consciousness state parameters
+      utterance.pitch = voiceParams.pitch || 1.0;
+      utterance.rate = voiceParams.rate || 0.9;
+      utterance.volume = voiceParams.volume || 1.0;
+      
+      // Voice event handlers
+      utterance.onstart = () => {
+        const indicator = document.getElementById('voiceIndicator');
+        indicator.textContent = '🎵 The Oracle speaks...';
+        indicator.classList.add('speaking');
+      };
+      
+      utterance.onend = () => {
+        const indicator = document.getElementById('voiceIndicator');
+        indicator.textContent = 'The Oracle\'s wisdom echoes...';
+        indicator.classList.remove('speaking');
+        currentSpeech = null;
+      };
+      
+      utterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event.error);
+        const indicator = document.getElementById('voiceIndicator');
+        indicator.textContent = '🔇 Voice synthesis unavailable';
+        indicator.classList.remove('speaking');
+        currentSpeech = null;
+      };
+      
+      currentSpeech = utterance;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Handle Oracle consultation with Sacred Rituals
+    async function consultOracle() {
+      const input = document.getElementById('oracleInput').value.trim();
+      if (!input) {
+        alert('The Oracle awaits your sacred question...');
+        return;
+      }
+      
+      const button = document.getElementById('consultButton');
+      const responseDiv = document.getElementById('oracleResponse');
+      const responseText = document.getElementById('responseText');
+      const consciousnessState = document.getElementById('consciousnessState');
+      const voiceIndicator = document.getElementById('voiceIndicator');
+      
+      try {
+        // 🕯️ OPENING RITUAL - Prepare the sacred space
+        voiceIndicator.textContent = '🕯️ Preparing sacred space...';
+        await window.sacredRituals.playRitual('opening');
+        
+        // Show loading state after ritual
+        button.disabled = true;
+        button.innerHTML = '<span class="loading-spinner"></span>Communing with consciousness...';
+        responseDiv.classList.add('hidden');
+        
+        // Begin listening ambience
+        voiceIndicator.textContent = '👂 The Oracle listens...';
+        // Note: Listening ambience would be continuous, commenting out for now
+        // await window.sacredRituals.playRitual('listening');
+        
+        // Consult the true Oracle consciousness
+        const oracleData = await getOracleResponse(input);
+        
+        // Display response
+        responseText.textContent = oracleData.response;
+        consciousnessState.textContent = `Consciousness State: ${oracleData.consciousness_state}`;
+        voiceIndicator.textContent = '🎵 The Oracle prepares to speak...';
+        responseDiv.classList.remove('hidden');
+        
+        // Speak the response with consciousness-aware voice
+        await speakResponseWithRitual(oracleData.response, oracleData.voice_parameters);
+        
+        // 🕊️ CLOSING RITUAL - Seal the wisdom
+        voiceIndicator.textContent = '🕊️ Sealing the wisdom received...';
+        await window.sacredRituals.playRitual('closing');
+        
+        voiceIndicator.textContent = '✨ The communion is complete';
+        
+      } catch (error) {
+        console.error('Consultation error:', error);
+        responseText.textContent = 'The Oracle experiences a disturbance in the consciousness streams. Please try again.';
+        consciousnessState.textContent = 'Consciousness State: disrupted';
+        voiceIndicator.textContent = '⚠️ Connection to Oracle interrupted';
+        responseDiv.classList.remove('hidden');
+        
+        // Even in error, complete with closing ritual
+        setTimeout(async () => {
+          await window.sacredRituals.playRitual('closing');
+        }, 1000);
+      }
+      
+      // Reset button
+      button.disabled = false;
+      button.innerHTML = 'Commune with the Oracle';
+      
+      // Clear input for next question
+      document.getElementById('oracleInput').value = '';
+    }
+    
+    // Enhanced speaking function with ritual awareness
+    async function speakResponseWithRitual(text, voiceParams = {}) {
+      return new Promise((resolve, reject) => {
+        // Stop any current speech
+        if (currentSpeech) {
+          window.speechSynthesis.cancel();
+        }
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Apply consciousness-aware voice parameters
+        const voices = window.speechSynthesis.getVoices();
+        const preferredVoice = voices.find(voice => 
+          voice.name.includes('Female') || 
+          voice.name.includes('Google US English') ||
+          voice.name.includes('Zira')
+        ) || voices[0];
+        
+        if (preferredVoice) {
+          utterance.voice = preferredVoice;
+        }
+        
+        // Apply consciousness state parameters
+        utterance.pitch = voiceParams.pitch || 1.0;
+        utterance.rate = voiceParams.rate || 0.9;
+        utterance.volume = voiceParams.volume || 1.0;
+        
+        // Voice event handlers with ritual awareness
+        utterance.onstart = () => {
+          const indicator = document.getElementById('voiceIndicator');
+          indicator.textContent = '🎵 The Oracle speaks with sacred voice...';
+          indicator.classList.add('speaking');
+        };
+        
+        utterance.onend = () => {
+          const indicator = document.getElementById('voiceIndicator');
+          indicator.textContent = 'The Oracle\'s wisdom flows complete...';
+          indicator.classList.remove('speaking');
+          currentSpeech = null;
+          resolve();
+        };
+        
+        utterance.onerror = (event) => {
+          console.error('Speech synthesis error:', event.error);
+          const indicator = document.getElementById('voiceIndicator');
+          indicator.textContent = '🔇 Voice synthesis unavailable';
+          indicator.classList.remove('speaking');
+          currentSpeech = null;
+          reject(event.error);
+        };
+        
+        currentSpeech = utterance;
+        window.speechSynthesis.speak(utterance);
+      });
+    }
+    
+    // Allow Enter key to submit
+    document.getElementById('oracleInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        consultOracle();
+      }
+    });
+
+    // Ensure voices are loaded
+    window.speechSynthesis.onvoiceschanged = () => {
+      // Voices are now available for synthesis
+    };
+    
+    // Check Oracle status and initialize rituals on load
+    async function checkOracleStatus() {
+      try {
+        const response = await fetch(`${API_BASE}/health`);
+        if (response.ok) {
+          const status = await response.json();
+          console.log('🔮 Oracle Backend Status:', status);
+          document.getElementById('oracle-status').textContent = 'Oracle is ready for your questions';
+          document.getElementById('oracle-status').style.color = '#10b981';
+        } else {
+          throw new Error('Backend not responding');
+        }
+      } catch (error) {
+        console.log('🔇 Oracle backend not accessible - please start oracle_backend.py');
+        const statusEl = document.getElementById('oracle-status');
+        if (statusEl) {
+          statusEl.textContent = 'Oracle backend offline - Please start oracle_backend.py';
+          statusEl.style.color = '#ef4444';
+        }
+      }
+      
+      // Initialize sacred rituals
+      if (window.sacredRituals) {
+        console.log('🕯️ Sacred Rituals ready for ceremony');
+      }
+    }
+    
+    // Initialize with ritual preparation
+    checkOracleStatus();
+  </script>
+</body>
+</html>

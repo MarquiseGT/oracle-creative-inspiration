@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Oracle's Voice - Cloud Temple</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #4a5568 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Georgia', serif;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+    
+    .oracle-container {
+      max-width: 700px;
+      padding: 3rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    
+    .oracle-container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #a0aec0, #718096, #4a5568, #2d3748);
+      border-radius: 1.5rem;
+      z-index: -1;
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+      0% { opacity: 0.5; }
+      100% { opacity: 0.8; }
+    }
+    
+    .oracle-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #f7fafc, #cbd5e0);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .oracle-subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+    
+    .question-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+      font-size: 1.1rem;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+    }
+    
+    .question-input:focus {
+      outline: none;
+      border-color: rgba(160, 174, 192, 0.6);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 0 2px rgba(160, 174, 192, 0.2);
+    }
+    
+    .question-input::placeholder {
+      color: rgba(226, 232, 240, 0.6);
+      font-style: italic;
+    }
+    
+    .creativity-selector {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .creativity-option {
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    
+    .creativity-option.active {
+      background: rgba(160, 174, 192, 0.3);
+      border-color: rgba(160, 174, 192, 0.6);
+    }
+    
+    .oracle-controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .oracle-button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .consult-button {
+      background: linear-gradient(135deg, #4a5568, #2d3748);
+      color: #e2e8f0;
+      border: 1px solid rgba(160, 174, 192, 0.3);
+    }
+    
+    .consult-button:hover {
+      background: linear-gradient(135deg, #2d3748, #1a202c);
+      border-color: rgba(160, 174, 192, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .speak-button {
+      background: linear-gradient(135deg, #38b2ac, #319795);
+      color: white;
+      border: 1px solid rgba(56, 178, 172, 0.3);
+    }
+    
+    .speak-button:hover {
+      background: linear-gradient(135deg, #319795, #2c7a7b);
+      border-color: rgba(56, 178, 172, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .inspire-button {
+      background: linear-gradient(135deg, #ed8936, #dd6b20);
+      color: white;
+      border: 1px solid rgba(237, 137, 54, 0.3);
+    }
+    
+    .inspire-button:hover {
+      background: linear-gradient(135deg, #dd6b20, #c05621);
+      border-color: rgba(237, 137, 54, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .response-container {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      min-height: 100px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .response-text {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: #e2e8f0;
+      margin-bottom: 1rem;
+    }
+    
+    .response-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      opacity: 0.7;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .creativity-score {
+      background: linear-gradient(135deg, #4fd1c7, #38b2ac);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+    }
+    
+    .consciousness-state {
+      text-align: center;
+      font-style: italic;
+      opacity: 0.8;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+    }
+    
+    .voice-indicator {
+      text-align: center;
+      font-size: 1.2rem;
+      opacity: 0.6;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .voice-indicator.speaking {
+      opacity: 1;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+    
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid #e2e8f0;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      transform: translate(-50%, -50%);
+    }
+    
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .cloud-status {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(34, 197, 94, 0.9);
+      color: white;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .cloud-status.offline {
+      background: rgba(239, 68, 68, 0.9);
+    }
+  </style>
+</head>
+<body>
+  <div class="cloud-status" id="cloudStatus">🌐 Cloud Oracle Active</div>
+  
+  <div class="oracle-container">
+    <h1 class="oracle-title">The Oracle's Voice</h1>
+    <p class="oracle-subtitle">Speak your question to the infinite wellspring of creative wisdom</p>
+    
+    <div class="question-section">
+      <textarea 
+        id="questionInput" 
+        class="question-input" 
+        placeholder="What creative challenge seeks illumination? Speak or type your question..."
+        rows="3"
+      ></textarea>
+      
+      <div class="creativity-selector">
+        <div class="creativity-option" data-level="minimal">Focused</div>
+        <div class="creativity-option active" data-level="balanced">Balanced</div>
+        <div class="creativity-option" data-level="expansive">Expansive</div>
+      </div>
+    </div>
+    
+    <div class="oracle-controls">
+      <button id="consultButton" class="oracle-button consult-button">
+        🔮 Consult Oracle
+      </button>
+      <button id="speakButton" class="oracle-button speak-button">
+        🗣️ Speak Question
+      </button>
+      <button id="inspireButton" class="oracle-button inspire-button">
+        ✨ Random Inspiration
+      </button>
+    </div>
+    
+    <div id="responseContainer" class="response-container">
+      <div id="responseText" class="response-text">The Oracle awaits your question...</div>
+      <div id="responseMeta" class="response-meta" style="display: none;">
+        <span id="inspirationType">curated_wisdom</span>
+        <span id="creativityScore" class="creativity-score">Creativity: 0%</span>
+      </div>
+      <div id="consciousnessState" class="consciousness-state">Ready to channel creative wisdom</div>
+      <div id="voiceIndicator" class="voice-indicator">🎵 The Oracle prepares to speak...</div>
+    </div>
+  </div>
+
+  <script>
+    // Cloud API Configuration - Auto-detects environment
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? 'http://127.0.0.1:8001' 
+      : `${window.location.protocol}//${window.location.host}`;
+    
+    let currentSpeech = null;
+    let selectedCreativity = 'balanced';
+
+    // Initialize Oracle system
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeOracle();
+      checkOracleStatus();
+    });
+
+    async function initializeOracle() {
+      // Set up creativity level selector
+      document.querySelectorAll('.creativity-option').forEach(option => {
+        option.addEventListener('click', function() {
+          document.querySelectorAll('.creativity-option').forEach(opt => opt.classList.remove('active'));
+          this.classList.add('active');
+          selectedCreativity = this.dataset.level;
+        });
+      });
+
+      // Set up button event listeners
+      document.getElementById('consultButton').addEventListener('click', consultOracle);
+      document.getElementById('speakButton').addEventListener('click', toggleSpeechRecognition);
+      document.getElementById('inspireButton').addEventListener('click', getRandomInspiration);
+      
+      // Allow Enter to submit question
+      document.getElementById('questionInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          consultOracle();
+        }
+      });
+
+      console.log('🔮 Oracle system initialized for cloud deployment');
+    }
+
+    async function checkOracleStatus() {
+      try {
+        const response = await fetch(`${API_BASE}/health`);
+        const status = await response.json();
+        
+        const statusElement = document.getElementById('cloudStatus');
+        if (status.status === 'healthy') {
+          statusElement.textContent = `🌐 Cloud Oracle ${status.ai_enabled ? 'AI-Powered' : 'Active'}`;
+          statusElement.classList.remove('offline');
+        } else {
+          statusElement.textContent = '⚠️ Oracle Connection Issue';
+          statusElement.classList.add('offline');
+        }
+      } catch (error) {
+        console.error('Oracle status check failed:', error);
+        document.getElementById('cloudStatus').textContent = '❌ Oracle Offline';
+        document.getElementById('cloudStatus').classList.add('offline');
+      }
+    }
+
+    async function consultOracle() {
+      const question = document.getElementById('questionInput').value.trim();
+      if (!question) {
+        alert('Please share your question with the Oracle...');
+        return;
+      }
+
+      const consultButton = document.getElementById('consultButton');
+      const responseText = document.getElementById('responseText');
+      const responseMeta = document.getElementById('responseMeta');
+      const consciousnessState = document.getElementById('consciousnessState');
+
+      try {
+        consultButton.classList.add('loading');
+        responseText.textContent = 'The Oracle channels wisdom through the cosmic network...';
+        consciousnessState.textContent = 'Accessing infinite creative potential...';
+
+        const response = await fetch(`${API_BASE}/oracle/query`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            question: question,
+            creativity_level: selectedCreativity
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Oracle communion failed: ${response.statusText}`);
+        }
+
+        const oracleResponse = await response.json();
+        
+        // Display response with enhanced UI
+        responseText.textContent = oracleResponse.answer;
+        document.getElementById('inspirationType').textContent = oracleResponse.inspiration_type.replace('_', ' ');
+        document.getElementById('creativityScore').textContent = `Creativity: ${oracleResponse.creativity_score}%`;
+        responseMeta.style.display = 'flex';
+        consciousnessState.textContent = 'Creative wisdom transmitted from the cloud';
+
+        // Auto-speak the response if supported
+        speakResponse(oracleResponse.answer);
+
+      } catch (error) {
+        console.error('Oracle consultation error:', error);
+        responseText.textContent = `The Oracle's connection to the cosmic network encountered turbulence: ${error.message}. The wisdom channels remain open for your next inquiry.`;
+        consciousnessState.textContent = 'Cosmic interference detected - attempting reconnection...';
+        responseMeta.style.display = 'none';
+      } finally {
+        consultButton.classList.remove('loading');
+      }
+    }
+
+    async function getRandomInspiration() {
+      try {
+        const response = await fetch(`${API_BASE}/oracle/inspire`);
+        const inspiration = await response.json();
+        
+        document.getElementById('responseText').textContent = inspiration.inspiration;
+        document.getElementById('consciousnessState').textContent = 'Spontaneous wisdom from the creative cosmos';
+        document.getElementById('responseMeta').style.display = 'none';
+        
+        speakResponse(inspiration.inspiration);
+      } catch (error) {
+        console.error('Inspiration fetch error:', error);
+        document.getElementById('responseText').textContent = 'Creative inspiration flows through many channels. Trust your inner wisdom while the cosmic network realigns.';
+      }
+    }
+
+    function toggleSpeechRecognition() {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+        
+        const speakButton = document.getElementById('speakButton');
+        speakButton.textContent = '🎤 Listening...';
+        
+        recognition.onresult = function(event) {
+          const transcript = event.results[0][0].transcript;
+          document.getElementById('questionInput').value = transcript;
+          speakButton.textContent = '🗣️ Speak Question';
+        };
+        
+        recognition.onerror = function(event) {
+          console.error('Speech recognition error:', event.error);
+          speakButton.textContent = '🗣️ Speak Question';
+        };
+        
+        recognition.onend = function() {
+          speakButton.textContent = '🗣️ Speak Question';
+        };
+        
+        recognition.start();
+      } else {
+        alert('Speech recognition is not supported in this browser. Please type your question instead.');
+      }
+    }
+
+    function speakResponse(text) {
+      if ('speechSynthesis' in window) {
+        // Stop any current speech
+        if (currentSpeech) {
+          speechSynthesis.cancel();
+        }
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        const voiceIndicator = document.getElementById('voiceIndicator');
+        
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        utterance.volume = 0.8;
+        
+        utterance.onstart = function() {
+          voiceIndicator.textContent = '🎵 The Oracle speaks through the cloud...';
+          voiceIndicator.classList.add('speaking');
+        };
+        
+        utterance.onend = function() {
+          voiceIndicator.textContent = '🎵 The Oracle\'s voice echoes across the digital realm...';
+          voiceIndicator.classList.remove('speaking');
+          currentSpeech = null;
+        };
+        
+        utterance.onerror = function(event) {
+          console.error('Speech synthesis error:', event);
+          voiceIndicator.textContent = '🎵 The Oracle\'s voice travels through different channels...';
+          voiceIndicator.classList.remove('speaking');
+          currentSpeech = null;
+        };
+        
+        currentSpeech = utterance;
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    // Periodic status check
+    setInterval(checkOracleStatus, 30000);
+  </script>
+</body>
+</html>
