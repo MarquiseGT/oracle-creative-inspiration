@@ -16,8 +16,8 @@ COPY requirements-docker.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY oracle_cloud.py oracle_enhanced.py
-COPY oracle_cloud_interface.html oracle_voice_interface.html
+COPY oracle_cloud.py .
+COPY oracle_cloud_interface.html .
 COPY .env .
 
 # Create non-root user for security
