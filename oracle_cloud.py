@@ -110,7 +110,7 @@ FALLBACK_RESPONSES = [
 async def serve_frontend():
     """Serve the main Oracle interface"""
     try:
-        return FileResponse("oracle_voice_interface.html")
+        return FileResponse("oracle_cloud_interface.html")
     except FileNotFoundError:
         return JSONResponse({
             "message": "Oracle Creative Inspiration API",
@@ -123,7 +123,7 @@ async def serve_frontend():
 async def serve_oracle_interface():
     """Serve Oracle interface at dedicated endpoint"""
     try:
-        return FileResponse("oracle_voice_interface.html")
+        return FileResponse("oracle_cloud_interface.html")
     except FileNotFoundError:
         return JSONResponse({
             "error": "Oracle interface not found",
